@@ -6,15 +6,21 @@ def extract_engine_info(yaml_data):
     engine_info = {}
     engine_counter = 1  # Initialize the engine counter
     engines = yaml_data.get('engines', [])
+    hyperthread = False  
+    if yaml_data.get('hyperthreads: true', []):  
+        hyperthread = True
     for engine in engines:
         targets = engine.get('targets', None)
         if targets is not None:
             # Calculate number of CPUs and threads
             nr_xs_helpers = engine.get('nr_xs_helpers', 0)
             first_core = engine.get('first_core', 0)
-            num_cpus = 1 + nr_xs_helpers
-            num_threads = 2 * num_cpus  # Assuming 2 threads per CPU
-            
+            num_threads = (1 + nr_xs_helpers) * targets
+            if hyperthread:
+                num_cpus = num_threads // 2
+            else:
+                num_cpus = num_threads
+
             engine_info[engine_counter] = {
                 'target': targets,
                 'num_cpus': num_cpus,
