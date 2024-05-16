@@ -7,7 +7,7 @@ def extract_engine_info(yaml_data):
     engine_counter = 1  # Initialize the engine counter
     engines = yaml_data.get('engines', [])
     hyperthread = False  
-    if yaml_data.get('hyperthreads: true', []):  
+    if yaml_data.get('hyperthreads', False):  
         hyperthread = True
     for engine in engines:
         targets = engine.get('targets', None)
